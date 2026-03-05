@@ -1,38 +1,22 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import { loveNotes, type CreateNoteRequest, type NoteResponse } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  createNote(note: CreateNoteRequest): Promise<NoteResponse>;
+  getNoteByToken(token: string): Promise<NoteResponse | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async createNote(note: CreateNoteRequest): Promise<NoteResponse> {
+    const [created] = await db.insert(loveNotes).values(note).returning();
+    return created;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getNoteByToken(token: string): Promise<NoteResponse | undefined> {
+    const [note] = await db.select().from(loveNotes).where(eq(loveNotes.token, token));
+    return note;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

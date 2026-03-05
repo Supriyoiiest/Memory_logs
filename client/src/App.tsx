@@ -5,14 +5,24 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
+import { Layout } from "@/components/Layout";
+import MemoryLane from "@/pages/MemoryLane";
+import MemoryView from "@/pages/MemoryView";
+import VirtualHugs from "@/pages/VirtualHugs";
+import VideoCall from "@/pages/VideoCall";
+
 function Router() {
   return (
-    <Switch>
-      {/* Add pages below */}
-      {/* <Route path="/" component={Home}/> */}
-      {/* Fallback to 404 */}
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={MemoryLane} />
+        <Route path="/memory/:token" component={MemoryView} />
+        <Route path="/hugs" component={VirtualHugs} />
+        <Route path="/call" component={VideoCall} />
+        {/* Fallback to 404 */}
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 
