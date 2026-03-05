@@ -145,7 +145,14 @@ export default function MemoryLane() {
               <div className="grid md:grid-cols-2 gap-8 items-start">
                 <div className="flex justify-center">
                   <div className="polaroid-card">
-                    <img src={imageUrl} alt="Random Memory" className="w-full h-auto object-cover rounded-sm border border-border" />
+                    <img 
+                      src={imageUrl} 
+                      alt="Random Memory" 
+                      className="w-full h-auto object-cover rounded-sm border border-border min-h-[300px] bg-muted flex items-center justify-center text-muted-foreground" 
+                      onError={(e) => {
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1560809451-b459247eb1bd?w=1000&q=80";
+                      }}
+                    />
                     <div className="mt-4 text-center font-display text-xl text-muted-foreground">What a day! ✨</div>
                   </div>
                 </div>
